@@ -98,16 +98,16 @@ class ApiService {
       'van_id': 0,
       'save_mode': 'normal',
       'order_type': 1,
-      'discount': _money(discount),
-      'total': _money(total),
-      'total_tax': _money(tax),
-      'grand_total': _money(grandTotal),
-      'round_off': _money(roundOff),
+      'discount': double.parse(discount.toStringAsFixed(2)),
+      'total': double.parse(total.toStringAsFixed(2)),
+      'total_tax': double.parse(tax.toStringAsFixed(2)),
+      'grand_total': double.parse(grandTotal.toStringAsFixed(2)),
+      'round_off': double.parse(roundOff.toStringAsFixed(2)),
       'if_vat': ifVat ? 1 : 0,
       'remarks': remarks.isEmpty ? 'POS Sale' : remarks,
       'item_id': items.map((e) => e.product.id).toList(),
       'quantity': items.map((e) => e.quantity).toList(),
-      'mrp': items.map((e) => _money(e.rate)).toList(),
+      'mrp': items.map((e) => double.parse(e.rate.toStringAsFixed(2))).toList(),
       'product_type': items.map((e) => e.productTypeId).toList(),
       'unit': items.map((e) => e.unitId).toList(),
     });
@@ -222,10 +222,16 @@ class ApiService {
   }
 
   Invoice _invoiceFromJson(Map<String, dynamic> json) {
+    String cName = _readString(json, ['customer_name', 'name'], fallback: '');
+    if (cName.isEmpty && json['customer'] is Map) {
+      cName = _readString(json['customer'], ['name', 'shop_name', 'customer_name'], fallback: 'Customer');
+    }
+    if (cName.isEmpty) cName = 'Customer';
+
     return Invoice(
       number: _readString(json, ['invoice_no', 'number', 'sale_no', 'code'], fallback: 'Sale'),
       date: _readString(json, ['date', 'created_at', 'invoice_date'], fallback: ''),
-      customerName: _readString(json, ['customer_name', 'name'], fallback: 'Customer'),
+      customerName: cName,
       total: _readDouble(json, ['total'], fallback: 0),
       totalTax: _readDouble(json, ['total_tax', 'tax', 'vat'], fallback: 0),
       roundOff: _readDouble(json, ['round_off'], fallback: 0),
@@ -260,6 +266,4 @@ class ApiService {
     }
     return null;
   }
-
-  String _money(double value) => value.toStringAsFixed(2);
 }

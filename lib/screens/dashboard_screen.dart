@@ -29,31 +29,34 @@ class DashboardScreen extends StatelessWidget {
                        MediaQuery.paddingOf(context).bottom,
           ),
           child: IntrinsicHeight(
-            child: Column(
-              children: [
-                const SizedBox(height: 42),
-                const Text(
-                  'Mobiz Demo',
-                  style: TextStyle(fontWeight: FontWeight.w800, fontSize: 18, color: Color(0xFF3F3D91)),
-                ),
-                const Spacer(),
-                PurpleActionTile(
-                  icon: Icons.people,
-                  label: 'Customer',
-                  onTap: () => Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => CustomerListScreen(session: session, api: api)),
+            child: SizedBox(
+              width: double.infinity,
+              child: Column(
+                children: [
+                  const SizedBox(height: 42),
+                  const Text(
+                    'Mobiz Demo',
+                    style: TextStyle(fontWeight: FontWeight.w800, fontSize: 18, color: Color(0xFF3F3D91)),
                   ),
-                ),
-                const SizedBox(height: 16),
-                PurpleActionTile(
-                  icon: Icons.receipt_long,
-                  label: 'Invoices',
-                  onTap: () => Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => InvoiceListScreen(session: session, api: api)),
+                  const Spacer(),
+                  PurpleActionTile(
+                    icon: Icons.people,
+                    label: 'Customer',
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => CustomerListScreen(session: session, api: api)),
+                    ),
                   ),
-                ),
-                const Spacer(flex: 2),
-              ],
+                  const SizedBox(height: 16),
+                  PurpleActionTile(
+                    icon: Icons.receipt_long,
+                    label: 'Invoices',
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => InvoiceListScreen(session: session, api: api)),
+                    ),
+                  ),
+                  const Spacer(flex: 2),
+                ],
+              ),
             ),
           ),
         ),

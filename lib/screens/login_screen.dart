@@ -14,8 +14,8 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _api = ApiService();
-  final _email = TextEditingController(text: 'sales@shop.com');
-  final _password = TextEditingController(text: '12345678');
+  final _email = TextEditingController();
+  final _password = TextEditingController();
   bool _hidePassword = true;
   bool _loading = false;
 

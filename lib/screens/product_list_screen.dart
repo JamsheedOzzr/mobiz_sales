@@ -169,14 +169,17 @@ class _ProductDialogState extends State<_ProductDialog> {
             ),
             const SizedBox(height: 34),
             Row(
-              mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                ElevatedButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Close')),
+                Expanded(
+                  child: ElevatedButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Close')),
+                ),
                 const SizedBox(width: 12),
-                ElevatedButton(
-                  onPressed: _save,
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
-                  child: const Text('Save'),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: _save,
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
+                    child: const Text('Save'),
+                  ),
                 ),
               ],
             ),

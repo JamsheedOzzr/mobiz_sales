@@ -85,116 +85,129 @@ class _InvoiceCreateScreenState extends State<InvoiceCreateScreen> {
         title: const Text('Sale'),
         actions: [IconButton(icon: const Icon(Icons.search), onPressed: _selectProduct)],
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(10, 12, 10, 6),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    widget.customer.name.toUpperCase(),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(color: Colors.grey, fontSize: 16),
-                  ),
-                ),
-                _ToggleButton(label: 'VAT', selected: _vat, onTap: () => setState(() => _vat = true)),
-                _ToggleButton(label: 'NO VAT', selected: !_vat, onTap: () => setState(() => _vat = false)),
-              ],
-            ),
-          ),
-          Expanded(
-            child: _items.isEmpty
-                ? EmptyState(message: 'Tap the search icon to select products', onRetry: _selectProduct)
-                : ListView.builder(
-                    itemCount: _items.length,
-                    itemBuilder: (context, index) {
-                      final item = _items[index];
-                      return TileCard(
-                        child: Stack(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(right: 34),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    item.product.title.toUpperCase(),
-                                    style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 15),
-                                  ),
-                                  const SizedBox(height: 10),
-                                  Text(
-                                    '${item.productTypeName} | ${item.unitName} | Qty: ${item.quantity} | Rate: ${item.rate.toStringAsFixed(3)} | Amt: ${item.amount.toStringAsFixed(2)}',
-                                    style: const TextStyle(fontSize: 18),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Positioned(
-                              right: 0,
-                              top: 0,
-                              child: IconButton(
-                                icon: const Icon(Icons.cancel, color: Colors.redAccent),
-                                onPressed: () => setState(() => _items.removeAt(index)),
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(78, 8, 28, 4),
-            child: Row(
-              children: [
-                const Text('Remarks'),
-                const SizedBox(width: 8),
-                Expanded(child: SizedBox(height: 38, child: TextField(controller: _remarks))),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(78, 6, 28, 4),
-            child: Row(
-              children: [
-                const Text('Discount'),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: SizedBox(
-                    height: 40,
-                    child: TextField(
-                      controller: _discount,
-                      keyboardType: TextInputType.number,
-                      onChanged: (_) => setState(() {}),
+      body: CustomScrollView(
+        slivers: [
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(10, 12, 10, 6),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      widget.customer.name.toUpperCase(),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(color: Colors.grey, fontSize: 16),
                     ),
                   ),
-                ),
-              ],
+                  _ToggleButton(label: 'VAT', selected: _vat, onTap: () => setState(() => _vat = true)),
+                  _ToggleButton(label: 'NO VAT', selected: !_vat, onTap: () => setState(() => _vat = false)),
+                ],
+              ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(28, 6, 28, 18),
+          if (_items.isEmpty)
+            SliverFillRemaining(
+              hasScrollBody: false,
+              child: EmptyState(message: 'Tap the search icon to select products', onRetry: _selectProduct),
+            )
+          else
+            SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
+                  final item = _items[index];
+                  return TileCard(
+                    child: Stack(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 34),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                item.product.title.toUpperCase(),
+                                style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 15),
+                              ),
+                              const SizedBox(height: 10),
+                              Text(
+                                '${item.productTypeName} | ${item.unitName} | Qty: ${item.quantity} | Rate: ${item.rate.toStringAsFixed(3)} | Amt: ${item.amount.toStringAsFixed(2)}',
+                                style: const TextStyle(fontSize: 18),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Positioned(
+                          right: 0,
+                          top: 0,
+                          child: IconButton(
+                            icon: const Icon(Icons.cancel, color: Colors.redAccent),
+                            onPressed: () => setState(() => _items.removeAt(index)),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+                childCount: _items.length,
+              ),
+            ),
+          SliverToBoxAdapter(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                _TotalLine(label: 'Total', value: _total),
-                _TotalLine(label: 'Tax', value: _tax),
-                _TotalLine(label: 'Round off', value: _roundOff),
-                _TotalLine(label: 'Grand Total', value: _grandTotal),
-                const SizedBox(height: 18),
-                Center(
-                  child: ElevatedButton(
-                    onPressed: _saving ? null : _save,
-                    child: _saving
-                        ? const SizedBox(
-                            width: 22,
-                            height: 22,
-                            child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
-                          )
-                        : const Text('SAVE'),
+                const SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(78, 8, 28, 4),
+                  child: Row(
+                    children: [
+                      const Text('Remarks'),
+                      const SizedBox(width: 8),
+                      Expanded(child: SizedBox(height: 38, child: TextField(controller: _remarks))),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(78, 6, 28, 4),
+                  child: Row(
+                    children: [
+                      const Text('Discount'),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: SizedBox(
+                          height: 40,
+                          child: TextField(
+                            controller: _discount,
+                            keyboardType: TextInputType.number,
+                            onChanged: (_) => setState(() {}),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(28, 6, 28, 18),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      _TotalLine(label: 'Total', value: _total),
+                      _TotalLine(label: 'Tax', value: _tax),
+                      _TotalLine(label: 'Round off', value: _roundOff),
+                      _TotalLine(label: 'Grand Total', value: _grandTotal),
+                      const SizedBox(height: 18),
+                      Center(
+                        child: ElevatedButton(
+                          onPressed: _saving ? null : _save,
+                          child: _saving
+                              ? const SizedBox(
+                                  width: 22,
+                                  height: 22,
+                                  child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                                )
+                              : const Text('SAVE'),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
